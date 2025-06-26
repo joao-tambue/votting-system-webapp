@@ -1,8 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { activities } from '../data/mockData';
-import ActivityCard from '../components/ActivityCard';
-import Layout from '../components/Layout';
+import React from "react";
+import Layout from "../components/Layout";
+import { activities } from "../data/mockData";
+import { useNavigate } from "react-router-dom";
+import ActivityCard from "../components/ActivityCard";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();

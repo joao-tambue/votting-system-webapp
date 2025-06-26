@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { LogOut, Trophy, Home, User, Settings } from "lucide-react";
+import { useMeStore } from "../stores/me-store";
+import { LogOut, Trophy, Home } from "lucide-react";
+import { STORAGE_KEYS } from "../constants/storage-keys";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +15,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  const me = useMeStore();
+  const splitedName = me.name?.split(" ") || [];
+  const coverName = `${splitedName[0][0]}${splitedName[1][0]}`;
+
   const handleLogout = () => {
+    STORAGE_KEYS.forEach((item) => {
+      localStorage.removeItem(item);
+      sessionStorage.removeItem(item);
+    });
+
     navigate("/login");
     setShowLogoutModal(false);
     setShowUserMenu(false);
@@ -23,7 +35,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      {/* Header */}
       <header className="bg-white shadow-lg border-b-4 border-green-500">
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -60,58 +71,44 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
               )}
 
-              {/* User Menu */}
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  className="flex items-center space-x-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors font-bold text-gray-600"
                 >
-                  {/* <img 
-                    src={user?.avatar} 
-                    alt={user?.name}
-                    className="w-6 h-6 rounded-full"
-                  /> */}
+                  {coverName}
                 </button>
 
-                {/* User Dropdown */}
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
-                        {/* <img 
-                          src={user?.avatar} 
-                          alt={user?.name}
-                          className="w-10 h-10 rounded-full"
-                        />
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 font-bold text-gray-600">
+                          {coverName}
+                        </div>
+
                         <div>
-                          <p className="font-semibold text-gray-800">{user?.name}</p>
-                          <p className="text-sm text-gray-600">{user?.email}</p>
-                        </div> */}
+                          <p className="font-semibold text-gray-800">
+                            {me?.name}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {shortenTextWithEllipsis(me?.email || "", 20)}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
                     <div className="py-2">
-                      <button
+                      <Link
+                        to="ranking"
                         onClick={() => {
                           setShowUserMenu(false);
-                          // Navigate to profile page (if implemented)
                         }}
                         className="w-full px-4 py-2 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors"
                       >
-                        <User size={16} className="text-gray-500" />
-                        <span className="text-gray-700">Meu Perfil</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          // Navigate to settings page (if implemented)
-                        }}
-                        className="w-full px-4 py-2 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors"
-                      >
-                        <Settings size={16} className="text-gray-500" />
-                        <span className="text-gray-700">Configurações</span>
-                      </button>
+                        <Trophy size={16} className="text-gray-500" />
+                        <span className="text-gray-700">Ranking</span>
+                      </Link>
 
                       <hr className="my-2" />
 
@@ -134,10 +131,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-6">{children}</main>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
@@ -171,7 +166,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       )}
 
-      {/* Click outside to close user menu */}
       {showUserMenu && (
         <div
           className="fixed inset-0 z-40"

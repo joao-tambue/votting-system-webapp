@@ -1,7 +1,10 @@
+import { getMe } from "./get-me";
 import { api } from "../../lib/axios";
-import { useMutation } from "@tanstack/react-query";
-import { MutationConfig } from "../../lib/react-query";
-import { AuthResponseModel } from "../../models/auth.model";
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import {
+  AuthMergeResponseModel,
+  AuthResponseModel,
+} from "../../models/auth.model";
 
 type SignInRequestDTO = {
   email: string;
@@ -16,9 +19,23 @@ export async function signInUserApi({ email, password }: SignInRequestDTO) {
   return response.data;
 }
 
-export function useSignInUser(config?: MutationConfig<typeof signInUserApi>) {
+export function useSignInUser(
+  config?: UseMutationOptions<AuthMergeResponseModel, Error, SignInRequestDTO>
+) {
   return useMutation({
-    mutationFn: signInUserApi,
+    mutationFn: async (data: SignInRequestDTO) => {
+      const response = await signInUserApi({
+        email: data.email,
+        password: data.password,
+      });
+
+      const me = await getMe(response?.access || "");
+
+      return {
+        auth: response,
+        me: me,
+      };
+    },
     ...config,
   });
 }

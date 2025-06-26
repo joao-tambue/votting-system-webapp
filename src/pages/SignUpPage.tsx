@@ -7,11 +7,12 @@ import nookies from "nookies";
 import { toast } from "react-toastify";
 import When from "../components/When";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useMeStore } from "../stores/me-store";
 import { Spinner } from "../components/Spinner";
 import { useAuthStore } from "../stores/auth-store";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthResponseModel } from "../models/auth.model";
+import { AuthMergeResponseModel } from "../models/auth.model";
 import { useSignUpUser } from "../services/auth/signup-user-api";
 import { Eye, EyeOff, Mail, Lock, LogIn, User } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
@@ -29,6 +30,7 @@ const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  const { setMeData } = useMeStore();
   const { setAuthData } = useAuthStore();
 
   const {
@@ -48,17 +50,18 @@ const SignUpPage: React.FC = () => {
 
   const { mutateAsync: signUpUserMutateAsync, isPending } = useSignUpUser({
     onError: (error) => handleApiError(error, "Usuário"),
-    onSuccess: (data: AuthResponseModel) => {
+    onSuccess: (data: AuthMergeResponseModel) => {
       toast.success("Bem vindo haha!...");
       reset();
 
-      setAuthData(data);
+      setMeData(data.me);
+      setAuthData(data.auth);
 
-      if (data.access) {
+      if (data.auth.access) {
         const expDate = new Date();
         expDate.setTime(expDate.getTime() + oneHourInSeconds * 1000);
 
-        nookies.set(null, VTS_AUTH_TOKEN, data.access, {
+        nookies.set(null, VTS_AUTH_TOKEN, data.auth.access, {
           path: "/",
           expires: expDate,
         });

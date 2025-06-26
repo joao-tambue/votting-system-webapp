@@ -1,7 +1,7 @@
 import { api } from "../../lib/axios";
 import { signInUserApi } from "./auth-user";
 import { VoterModel } from "../../models/voter.model";
-import { AuthResponseModel } from "../../models/auth.model";
+import { AuthMergeResponseModel } from "../../models/auth.model";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
 type SignUpRequestDTO = {
@@ -21,7 +21,7 @@ export async function signUpUserApi(data: SignUpRequestDTO) {
 }
 
 export function useSignUpUser(
-  config?: UseMutationOptions<AuthResponseModel, Error, SignUpRequestDTO>
+  config?: UseMutationOptions<AuthMergeResponseModel, Error, SignUpRequestDTO>
 ) {
   return useMutation({
     mutationFn: async (data: SignUpRequestDTO) => {
@@ -32,7 +32,10 @@ export function useSignUpUser(
         password: data.password,
       });
 
-      return authCredentials;
+      return {
+        auth: authCredentials,
+        me: response.voter,
+      };
     },
     ...config,
   });
