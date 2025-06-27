@@ -6,7 +6,7 @@ export function handleApiError(error: unknown, msg: string) {
     const status = error.response?.status;
 
     if (status === 404) {
-      toast.success(`${msg} não encontrado`);
+      toast.error(`${msg} não encontrado`);
     } else if (status && status >= 500) {
       toast.error("Erro do servidor, por favor tente novamente");
     } else if (status && status >= 400) {
@@ -19,6 +19,4 @@ export function handleApiError(error: unknown, msg: string) {
       );
     }
   }
-
-  toast.error("Ops!, erro do servidor!");
 }
