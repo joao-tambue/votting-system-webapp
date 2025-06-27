@@ -15,7 +15,7 @@ const ProjectDetailPage: React.FC = () => {
     return (
       <Layout>
         <div className="text-center py-12">
-          <p className="text-gray-500">Projeto não encontrado.</p>
+          <p className="text-gray-500">Projeto não foi encontrado.</p>
           <button
             onClick={() => navigate(-1)}
             className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
