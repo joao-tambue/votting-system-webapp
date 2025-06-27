@@ -1,9 +1,9 @@
-import React from 'react';
-import { Category } from '../types';
-import { ChevronRight, Layers } from 'lucide-react';
+import React from "react";
+import { ChevronRight, Layers } from "lucide-react";
+import { CategoryModel } from "../models/category.model";
 
 interface CategoryCardProps {
-  category: Category;
+  category: CategoryModel;
   onClick: () => void;
 }
 
@@ -18,17 +18,17 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
           <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
             <Layers size={20} className="text-green-600" />
           </div>
-          
+
           <div>
             <h3 className="font-semibold text-gray-800">{category.name}</h3>
-            {category.hasSubcategories && (
+            {category.subcategories && (
               <p className="text-xs text-gray-500">
                 {category.subcategories?.length} subcategorias
               </p>
             )}
           </div>
         </div>
-        
+
         <ChevronRight size={20} className="text-gray-400" />
       </div>
     </div>

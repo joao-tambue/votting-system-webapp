@@ -1,8 +1,10 @@
+import nookies from "nookies";
 import React, { useState } from "react";
+import { LogOut, Home } from "lucide-react";
 import { useMeStore } from "../stores/me-store";
-import { LogOut, Trophy, Home } from "lucide-react";
 import { STORAGE_KEYS } from "../constants/storage-keys";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { VTS_AUTH_TOKEN } from "../constants/cookies-keys";
 import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
 
 interface LayoutProps {
@@ -16,8 +18,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const me = useMeStore();
-  const splitedName = me.name?.split(" ") || [];
-  const coverName = `${splitedName[0][0]}${splitedName[1][0]}`;
+  const splitedName = me?.name?.split(" ") || [];
+  const coverName =
+    splitedName.length > 1
+      ? `${splitedName[0][0]}${splitedName[1][0]}`
+      : splitedName[0][0];
 
   const handleLogout = () => {
     STORAGE_KEYS.forEach((item) => {
@@ -25,12 +30,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       sessionStorage.removeItem(item);
     });
 
-    navigate("/login");
-    setShowLogoutModal(false);
+    nookies.destroy(null, VTS_AUTH_TOKEN, { path: "/" });
+
     setShowUserMenu(false);
+    setShowLogoutModal(false);
+
+    navigate("/login");
   };
 
-  const isRankingPage = location.pathname === "/ranking";
+  // const isRankingPage = location.pathname === "/ranking";
   const isHomePage = location.pathname === "/";
 
   return (
@@ -61,7 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
               )}
 
-              {!isRankingPage && (
+              {/* {!isRankingPage && (
                 <button
                   onClick={() => navigate("/ranking")}
                   className="p-2 rounded-full bg-yellow-100 text-yellow-600 hover:bg-yellow-200 transition-colors"
@@ -69,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 >
                   <Trophy size={20} />
                 </button>
-              )}
+              )} */}
 
               <div className="relative">
                 <button
@@ -99,7 +107,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
 
                     <div className="py-2">
-                      <Link
+                      {/* <Link
                         to="ranking"
                         onClick={() => {
                           setShowUserMenu(false);
@@ -110,7 +118,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <span className="text-gray-700">Ranking</span>
                       </Link>
 
-                      <hr className="my-2" />
+                      <hr className="my-2" /> */}
 
                       <button
                         onClick={() => {

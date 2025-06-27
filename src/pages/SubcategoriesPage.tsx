@@ -1,18 +1,24 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { categories } from '../data/mockData';
-import Layout from '../components/Layout';
-import { ArrowLeft, Layers } from 'lucide-react';
+import React from "react";
+import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Layers } from "lucide-react";
+import { CategoryTypeModel } from "../models/category.model";
+import { useCategoriesStore } from "../stores/categories-store";
 
 const SubcategoriesPage: React.FC = () => {
-  const { categoryId } = useParams();
   const navigate = useNavigate();
 
-  const category = categories.find(cat => cat.id === categoryId);
-  const subcategories = category?.subcategories || [];
+  const {
+    name: CategoryName,
+    category_type,
+    subcategories,
+  } = useCategoriesStore();
 
-  const handleSubcategoryClick = (subcategoryId: string) => {
-    navigate(`/subcategory/${subcategoryId}/projects`);
+  const handleSubcategoryClick = (
+    categoryType: CategoryTypeModel,
+    subcategoryId: number
+  ) => {
+    navigate(`/subcategory/${categoryType}/${subcategoryId}/projects`);
   };
 
   return (
@@ -26,26 +32,41 @@ const SubcategoriesPage: React.FC = () => {
             <ArrowLeft size={20} className="text-gray-600" />
           </button>
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{category?.name}</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800">
+              {CategoryName}
+            </h2>
             <p className="text-sm text-gray-600">Selecione uma subcategoria</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-          {subcategories.map((subcategory) => (
-            <div
-              key={subcategory.id}
-              onClick={() => handleSubcategoryClick(subcategory.id)}
-              className="bg-white rounded-xl shadow-md p-4 cursor-pointer transform transition-all duration-200 hover:scale-102 hover:shadow-lg active:scale-98 border-l-4 border-blue-500"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Layers size={20} className="text-blue-600" />
+          {subcategories && subcategories?.length > 0 ? (
+            subcategories.map((subcategory) => (
+              <div
+                key={subcategory.id}
+                onClick={() =>
+                  handleSubcategoryClick(
+                    category_type as CategoryTypeModel,
+                    subcategory.id
+                  )
+                }
+                className="bg-white rounded-xl shadow-md p-4 cursor-pointer transform transition-all duration-200 hover:scale-102 hover:shadow-lg active:scale-98 border-l-4 border-blue-500"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Layers size={20} className="text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800">
+                    {subcategory.name}
+                  </h3>
                 </div>
-                <h3 className="font-semibold text-gray-800">{subcategory.name}</h3>
               </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">Nenhuma sub-categoria encontrada.</p>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </Layout>

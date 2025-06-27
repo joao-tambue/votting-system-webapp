@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { parseCookies } from "nookies";
+import nookies, { parseCookies } from "nookies";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -16,10 +16,11 @@ import { queryClient } from "./lib/react-query";
 import ActivityPage from "./pages/ActivityPage";
 import { ToastContainer } from "react-toastify";
 import ProjectsPage from "./pages/ProjectsPage";
+import { STORAGE_KEYS } from "./constants/storage-keys";
 import SubcategoriesPage from "./pages/SubcategoriesPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { VTS_AUTH_TOKEN } from "./constants/cookies-keys";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -27,7 +28,17 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   const cookies = parseCookies();
   const accessToken = cookies[VTS_AUTH_TOKEN];
 
-  return accessToken ? <>{children}</> : <Navigate to="/login" />;
+  if (!accessToken) {
+    STORAGE_KEYS.forEach((item) => {
+      localStorage.removeItem(item);
+      sessionStorage.removeItem(item);
+    });
+    nookies.destroy(null, VTS_AUTH_TOKEN, { path: "/" });
+
+    return <Navigate to="/login" />;
+  }
+
+  return <>{children}</>;
 };
 
 const GuestRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -87,7 +98,7 @@ function App() {
             }
           />
           <Route
-            path="/category/:categoryId/projects"
+            path="/category/:categoryType/:categoryId/projects"
             element={
               <ProtectedRoute>
                 <ProjectsPage />
@@ -95,7 +106,7 @@ function App() {
             }
           />
           <Route
-            path="/subcategory/:subcategoryId/projects"
+            path="/subcategory/:categoryType/:subcategoryId/projects"
             element={
               <ProtectedRoute>
                 <ProjectsPage />
