@@ -58,11 +58,13 @@ const ProjectDetailPage: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {/* Image for stands */}
           {project.type === 'stand' && project.image && (
+
+
             <div className="relative">
               <img 
                 src={project.image} 
                 alt={project.name}
-                className="w-full h-64 md:h-80 object-cover"
+                className="w-full h-64 md:h-80  object-center bg-full bg-center bg-no-repeat"
               />
               <div className="absolute top-4 left-4">
                 <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2">
