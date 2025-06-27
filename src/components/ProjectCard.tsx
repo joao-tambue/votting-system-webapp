@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAddUserVote } from "../services/add-vote-api";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryTypeModel } from "../models/category.model";
-import { DEFAULT_ACTIVITY_ID } from "../constants/constants";
+import { API_BASE_URL, DEFAULT_ACTIVITY_ID } from "../constants/constants";
 import { Heart, User, GraduationCap, Building2 } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 
@@ -63,7 +63,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95">
         {item.cover && (
           <img
-            src={item.cover}
+            src={`${API_BASE_URL}/media/${item.cover}`}
             alt={item.name}
             className="w-full h-48 object-cover"
           />
