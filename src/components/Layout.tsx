@@ -4,8 +4,8 @@ import { LogOut, Home } from "lucide-react";
 import { useMeStore } from "../stores/me-store";
 import { STORAGE_KEYS } from "../constants/storage-keys";
 import { useNavigate, useLocation } from "react-router-dom";
-import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
 import { VTS_AUTH_TOKEN } from "../constants/cookies-keys";
+import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
 
 interface LayoutProps {
   children: React.ReactNode;

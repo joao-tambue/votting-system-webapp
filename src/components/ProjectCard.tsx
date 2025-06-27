@@ -16,7 +16,7 @@ interface ProjectCardProps {
   categoryType: CategoryTypeModel;
   subCategoryId?: number;
   ableToVote?: boolean;
-  item: Omit<ItemsModel, "has_voted"> & {
+  item: ItemsModel & {
     type: CategoryTypeModel;
   };
 }
@@ -102,17 +102,28 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               onClick={() => handleAddVote(Number(item.id))}
               className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
                 ableToVote
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  ? item.has_voted
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
                   : item.type === "stand"
                   ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                   : "bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
               } w-full md:w-auto`}
             >
               <When expr={ableToVote}>
-                <span className="flex items-center justify-center space-x-2">
-                  <Heart size={20} />
-                  <span>Voto Registrado!</span>
-                </span>
+                <When expr={item.has_voted}>
+                  <span className="flex items-center justify-center space-x-2">
+                    <Heart size={20} />
+                    <span>Meu voto</span>
+                  </span>
+
+                  <When.Else>
+                    <span className="flex items-center justify-center space-x-2">
+                      <Heart size={20} />
+                      <span>Voto Registrado!</span>
+                    </span>
+                  </When.Else>
+                </When>
 
                 <When.Else>
                   <When expr={loadingVote}>
@@ -153,16 +164,26 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           onClick={() => handleAddVote(Number(item.id))}
           className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
             ableToVote
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              ? item.has_voted
+                ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                : "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
           } w-full md:w-auto`}
         >
           <When expr={ableToVote}>
-            <span className="flex items-center justify-center space-x-2">
-              <Heart size={20} />
-              <span>Voto Registrado!</span>
-            </span>
+            <When expr={item.has_voted}>
+              <span className="flex items-center justify-center space-x-2">
+                <Heart size={20} />
+                <span>Meu voto</span>
+              </span>
 
+              <When.Else>
+                <span className="flex items-center justify-center space-x-2">
+                  <Heart size={20} />
+                  <span>Voto Registrado!</span>
+                </span>
+              </When.Else>
+            </When>
             <When.Else>
               <When expr={loadingVote}>
                 <Spinner />
