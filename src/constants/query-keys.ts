@@ -9,6 +9,7 @@ export const activitiesQueryKeys = {
 };
 
 export const categoryQueryKeys = {
+  getVotesLifetime: (activityId: number) => ["votes-lifetime", activityId],
   getCategories: () => ["category-list"],
   getItemsFromCategories: (
     categoryType: CategoryTypeModel,

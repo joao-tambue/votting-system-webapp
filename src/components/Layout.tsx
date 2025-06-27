@@ -1,11 +1,13 @@
 import nookies from "nookies";
-import React, { useState } from "react";
-import { LogOut, Home } from "lucide-react";
 import { useMeStore } from "../stores/me-store";
+import React, { useEffect, useState } from "react";
+import { LogOut, Home, Trophy } from "lucide-react";
 import { STORAGE_KEYS } from "../constants/storage-keys";
-import { useNavigate, useLocation } from "react-router-dom";
 import { VTS_AUTH_TOKEN } from "../constants/cookies-keys";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useVotesLifetimeStore } from "../stores/votes-lifetime-store";
 import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
+import { useCheckVotesLifetime } from "../services/check-the-lifetime-of-votes-api";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,12 +19,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  const { isFetched, setLifetimeStatus } = useVotesLifetimeStore();
+  const { data: lifetimeStatus, isSuccess } = useCheckVotesLifetime();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setLifetimeStatus(lifetimeStatus.is_fetched);
+    }
+  }, [isSuccess, lifetimeStatus, setLifetimeStatus]);
+
   const me = useMeStore();
   const splitedName = me?.name?.split(" ") || [];
   const coverName =
-    splitedName.length > 1
-      ? `${splitedName[0][0]}${splitedName[1][0]}`
-      : splitedName[0][0];
+    splitedName && splitedName?.length > 1
+      ? `${splitedName[0]?.[0]}${splitedName[1]?.[0]}`
+      : splitedName[0]?.[0];
 
   const handleLogout = () => {
     STORAGE_KEYS.forEach((item) => {
@@ -69,7 +80,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
               )}
 
-              {/* {!isRankingPage && (
+              {!isFetched && (
                 <button
                   onClick={() => navigate("/ranking")}
                   className="p-2 rounded-full bg-yellow-100 text-yellow-600 hover:bg-yellow-200 transition-colors"
@@ -77,7 +88,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 >
                   <Trophy size={20} />
                 </button>
-              )} */}
+              )}
 
               <div className="relative">
                 <button
@@ -107,18 +118,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
 
                     <div className="py-2">
-                      {/* <Link
-                        to="ranking"
-                        onClick={() => {
-                          setShowUserMenu(false);
-                        }}
-                        className="w-full px-4 py-2 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors"
-                      >
-                        <Trophy size={16} className="text-gray-500" />
-                        <span className="text-gray-700">Ranking</span>
-                      </Link>
+                      {!isFetched && (
+                        <>
+                          <Link
+                            to="ranking"
+                            onClick={() => {
+                              setShowUserMenu(false);
+                            }}
+                            className="w-full px-4 py-2 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors"
+                          >
+                            <Trophy size={16} className="text-gray-500" />
+                            <span className="text-gray-700">Ranking</span>
+                          </Link>
 
-                      <hr className="my-2" /> */}
+                          <hr className="my-2" />
+                        </>
+                      )}
 
                       <button
                         onClick={() => {

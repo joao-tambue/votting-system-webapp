@@ -30,7 +30,7 @@ export const useMeStore = createPersistentStore<VoteStoreType>(
       }),
   }),
   {
-    storage: "sessionStorage",
+    storage: "localStorage",
     partialize: (state) => ({
       id: state.id,
       name: state.name,
