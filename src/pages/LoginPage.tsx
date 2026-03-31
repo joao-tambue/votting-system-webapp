@@ -17,6 +17,7 @@ import { AuthMergeResponseModel } from "../models/auth.model";
 import { Eye, EyeOff, Mail, Lock, LogIn } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 import { oneHourInSeconds, VTS_AUTH_TOKEN } from "../constants/cookies-keys";
+import SignupSidebar from "../components/SignupSidebar";
 
 const signInUserSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -77,119 +78,123 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center px-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <img
-            src="/logo-caf.png"
-            alt="CAF Logo"
-            className="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg"
-          />
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            CAF Voting System
-          </h1>
-          <p className="text-gray-600 text-sm">
-            Sistema de Votação do Colégio Árvore da Felicidade
-          </p>
-        </div>
+    <div className="min-h-screen flex flex-row items-start justify-between bg-gray-100">
+      <SignupSidebar />
 
-        <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <Mail
-                size={20}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="email"
-                id="email"
-                value={watch("email")}
-                onChange={(e) =>
-                  setValue("email", e.target.value, {
-                    shouldValidate: true,
-                  })
-                }
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="seu.email@exemplo.com"
-              />
-            </div>
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.email.message}
-              </p>
-            )}
+      <div className="flex-1 flex items-center justify-center p-12">
+        <div className="p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <img
+              src="/logo-caf.png"
+              alt="CAF Logo"
+              className="w-20 h-20 mx-auto mb-4 rounded-full border-2 border-gray-300"
+            />
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              CAF Voting System
+            </h1>
+            <p className="text-gray-600 text-sm">
+              Sistema de Votação do Colégio Árvore da Felicidade
+            </p>
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Senha
-            </label>
-            <div className="relative">
-              <Lock
-                size={20}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={watch("password")}
-                onChange={(e) =>
-                  setValue("password", e.target.value, {
-                    shouldValidate: true,
-                  })
-                }
-                className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Sua senha"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+                Email
+              </label>
+              <div className="relative">
+                <Mail
+                  size={20}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  type="email"
+                  id="email"
+                  value={watch("email")}
+                  onChange={(e) =>
+                    setValue("email", e.target.value, {
+                      shouldValidate: true,
+                    })
+                  }
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="seu.email@exemplo.com"
+                />
+              </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
-          >
-            <When expr={isPending}>
-              <Spinner />
-              <When.Else>
-                <LogIn size={20} />
-                <span>Entrar</span>
-              </When.Else>
-            </When>
-          </button>
 
-          <p className="text-center text-sm text-gray-500 leading-relaxed">
-            Ainda não possue uma conta?{" "}
-            <Link to="/signup" className="text-purple-600 font-bold">
-              Criar conta
-            </Link>
-          </p>
-        </form>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Senha
+              </label>
+              <div className="relative">
+                <Lock
+                  size={20}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={watch("password")}
+                  onChange={(e) =>
+                    setValue("password", e.target.value, {
+                      shouldValidate: true,
+                    })
+                  }
+                  className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="Sua senha"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+            >
+              <When expr={isPending}>
+                <Spinner />
+                <When.Else>
+                  <LogIn size={20} />
+                  <span>Entrar</span>
+                </When.Else>
+              </When>
+            </button>
+
+            <p className="text-center text-sm text-gray-500 leading-relaxed">
+              Ainda não possue uma conta?{" "}
+              <Link to="/signup" className="text-purple-600 font-bold">
+                Criar conta
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
