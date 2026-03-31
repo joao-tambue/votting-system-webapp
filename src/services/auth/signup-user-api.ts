@@ -1,42 +1,27 @@
 import { api } from "../../lib/axios";
-import { signInUserApi } from "./auth-user";
-import { VoterModel } from "../../models/voter.model";
-import { AuthMergeResponseModel } from "../../models/auth.model";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
-type SignUpRequestDTO = {
+type RegisterVoterRequestDTO = {
   name: string;
   email: string;
   password: string;
 };
 
-type SignUpResponse = {
+type RegisterVoterResponse = {
   message: string;
-  voter: VoterModel;
+  // voter pode ou não vir (dependendo do backend). Vamos deixar opcional.
 };
 
-export async function signUpUserApi(data: SignUpRequestDTO) {
-  const response = await api.post<SignUpResponse>("/api/register-voter", data);
+export async function registerVoterApi(data: RegisterVoterRequestDTO) {
+  const response = await api.post<RegisterVoterResponse>("/api/register-voter", data);
   return response.data;
 }
 
-export function useSignUpUser(
-  config?: UseMutationOptions<AuthMergeResponseModel, Error, SignUpRequestDTO>
+export function useRegisterVoter(
+  config?: UseMutationOptions<RegisterVoterResponse, Error, RegisterVoterRequestDTO>
 ) {
   return useMutation({
-    mutationFn: async (data: SignUpRequestDTO) => {
-      const response = await signUpUserApi(data);
-
-      const authCredentials = await signInUserApi({
-        email: response.voter.email,
-        password: data.password,
-      });
-
-      return {
-        auth: authCredentials,
-        me: response.voter,
-      };
-    },
+    mutationFn: registerVoterApi,
     ...config,
   });
 }

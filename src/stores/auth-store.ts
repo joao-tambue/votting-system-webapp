@@ -9,7 +9,7 @@ type AuthStoreType = AuthResponseModel & {
 export const useAuthStore = createPersistentStore<AuthStoreType>(
   "vts-ath-sre",
   {
-    access: undefined,
+    token: undefined,
     refresh: undefined,
     email: undefined,
     setAuthData: () => {},
@@ -18,13 +18,13 @@ export const useAuthStore = createPersistentStore<AuthStoreType>(
   (set) => ({
     setAuthData: (data) =>
       set({
-        access: data.access,
+        token: data.token,
         refresh: data.refresh,
         email: data.email,
       }),
     cleanAuthData: () =>
       set({
-        access: undefined,
+        token: undefined,
         refresh: undefined,
         email: undefined,
       }),
@@ -32,7 +32,7 @@ export const useAuthStore = createPersistentStore<AuthStoreType>(
   {
     storage: "localStorage",
     partialize: (state) => ({
-      access: state.access,
+      token: state.token,
       refresh: state.refresh,
       email: state.email,
     }),

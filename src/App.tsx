@@ -21,6 +21,7 @@ import SubcategoriesPage from "./pages/SubcategoriesPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import { VTS_AUTH_TOKEN } from "./constants/cookies-keys";
 import { QueryClientProvider } from "@tanstack/react-query";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -70,6 +71,14 @@ function App() {
             element={
               <GuestRoute>
                 <SignUpPage />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/verify-email"
+            element={
+              <GuestRoute>
+                <VerifyEmailPage />
               </GuestRoute>
             }
           />

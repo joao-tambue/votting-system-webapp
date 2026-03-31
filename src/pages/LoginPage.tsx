@@ -56,11 +56,11 @@ const LoginPage: React.FC = () => {
       setMeData(data.me);
       setAuthData(data.auth);
 
-      if (data.auth.access) {
+      if (data.auth.token) {
         const expDate = new Date();
         expDate.setTime(expDate.getTime() + oneHourInSeconds * 1000);
 
-        nookies.set(null, VTS_AUTH_TOKEN, data.auth.access, {
+        nookies.set(null, VTS_AUTH_TOKEN, data.auth.token, {
           path: "/",
           expires: expDate,
         });
