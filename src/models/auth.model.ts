@@ -1,7 +1,7 @@
 import { VoterModel } from "./voter.model";
 
 export type AuthResponseModel = {
-  access?: string;
+  token?: string;
   refresh?: string;
   email?: string;
 };

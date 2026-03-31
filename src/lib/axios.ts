@@ -10,16 +10,15 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // Rotas que NUNCA devem ter Authorization
-  const publicRoutes = ["/api/login", "/api/register-voter"];
+  const publicRoutes = ["/api/register-voter", "/api/login"];
 
   if (publicRoutes.some((route) => config.url?.includes(route))) {
     return config;
   }
 
-  const accessToken = useAuthStore.getState().access;
+  const accessToken = useAuthStore.getState().token;
 
-  if (accessToken) {
+  if (accessToken && typeof accessToken === "string" && accessToken.trim() !== "") {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 

@@ -16,6 +16,7 @@ export async function signInUserApi({ email, password }: SignInRequestDTO) {
     email,
     password,
   });
+
   return response.data;
 }
 
@@ -29,7 +30,7 @@ export function useSignInUser(
         password: data.password,
       });
 
-      const me = await getMe(response?.access || "");
+      const me = await getMe(response?.token);
 
       return {
         auth: response,
