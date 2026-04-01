@@ -4,20 +4,21 @@ import { ExtractFnReturnType } from "../lib/react-query";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryModel } from "../models/category.model";
 
-export async function getCategoriesApi() {
-  const response = await api.get<CategoryModel[]>("/api/get-categorys");
-  
+export async function getCategoriesApi(activityId: number): Promise<CategoryModel[]> {
+  const response = await api.get<CategoryModel[]>(
+    `/api/get-categories/${activityId}`
+  );
 
-  console.log("response", response.data);
-
+  console.log("Categories API Response:", response.data); // Log the raw response data for debugging
   return response.data;
 }
 
 type QueryFnType = typeof getCategoriesApi;
 
-export function useCategories() {
+export function useCategories(activityId?: number) {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
-    queryKey: categoryQueryKeys.getCategories(),
-    queryFn: () => getCategoriesApi(),
+    queryKey: categoryQueryKeys.getCategories(activityId),
+    queryFn: () => getCategoriesApi(activityId!),
+    enabled: !!activityId,
   });
 }

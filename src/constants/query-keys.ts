@@ -1,5 +1,3 @@
-import { CategoryTypeModel } from "../models/category.model";
-
 export const authQueryKeys = {
   getMe: (voterId: string) => ["user-profile", voterId],
 };
@@ -9,11 +7,12 @@ export const activitiesQueryKeys = {
 };
 
 export const categoryQueryKeys = {
-  getVotesLifetime: (activityId: number) => ["votes-lifetime", activityId],
-  getCategories: () => ["category-list"],
+  getCategories: (activityId?: number) => ["categories", activityId],
+  getSubcategories: (categoryId?: number) => ["subcategories", categoryId],
   getItemsFromCategories: (
-    categoryType: CategoryTypeModel,
+    categoryType?: string,
     categoryId?: number,
     subCategoryId?: number
-  ) => ["category-items", categoryId, subCategoryId, categoryType],
+  ) => ["category-items", categoryType, categoryId, subCategoryId],
+  getVotesLifetime: () => ["votes-lifetime"],
 };

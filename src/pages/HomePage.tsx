@@ -48,7 +48,9 @@ const HomePage: React.FC = () => {
                           {activity.name}
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">
-                          {activity.categories?.length ?? 0} categorias
+                          {activity.description
+                            ? activity.description.slice(0, 40) + "..."
+                            : "Sem descrição"}
                         </p>
                       </div>
                     </div>
