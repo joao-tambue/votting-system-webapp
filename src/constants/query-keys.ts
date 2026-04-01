@@ -8,7 +8,7 @@ export const activitiesQueryKeys = {
 
 export const categoryQueryKeys = {
   getCategories: (activityId?: number) => ["categories", activityId],
-  getSubcategories: (categoryId?: number) => ["subcategories", categoryId],
+  getSubcategories: (activityId?: number, categoryId?: number) => ["subcategories", activityId, categoryId],
   getItemsFromCategories: (
     categoryType?: string,
     categoryId?: number,

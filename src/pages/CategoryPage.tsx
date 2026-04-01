@@ -18,12 +18,7 @@ const CategoryPage: React.FC = () => {
 
   const handleCategoryClick = (category: CategoryModel) => {
     setCategoryData(category);
-
-    if (category.subcategories && category.subcategories.length > 0) {
       navigate(`/category/${category.id}/subcategories`);
-    } else {
-      navigate(`/category/${category.category_type}/${category.id}/projects`);
-    }
   };
 
   return (

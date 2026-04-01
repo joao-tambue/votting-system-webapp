@@ -6,13 +6,15 @@ import { CategoryTypeModel } from "../models/category.model";
 import { useCategoriesStore } from "../stores/categories-store";
 import { useSubcategories } from "../services/get-subcategories-api";
 import LoadingOverlay from "../components/LoadingOverlay";
+import { useActivityStore } from "../stores/activities-store";
 
 const SubcategoriesPage: React.FC = () => {
   const navigate = useNavigate();
 
   const { id: categoryId, name: CategoryName, category_type } = useCategoriesStore();
+  const { id: activityId } = useActivityStore();
 
-  const { data: subcategories, isLoading } = useSubcategories(categoryId);
+  const { data: subcategories, isLoading } = useSubcategories(activityId, categoryId);
 
   const handleSubcategoryClick = (
     categoryType: CategoryTypeModel,
