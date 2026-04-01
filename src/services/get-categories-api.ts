@@ -5,7 +5,11 @@ import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryModel } from "../models/category.model";
 
 export async function getCategoriesApi() {
-  const response = await api.get<CategoryModel[]>("/api/get-categories");
+  const response = await api.get<CategoryModel[]>("/api/get-categorys");
+  
+
+  console.log("response", response.data);
+
   return response.data;
 }
 

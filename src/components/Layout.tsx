@@ -61,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <img
                 src="/logo-caf.png"
                 alt="CAF Logo"
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 mx-auto rounded-full border-2 border-gray-500"
               />
               <div>
                 <h1 className="text-lg font-bold text-gray-800">CAF Vote</h1>

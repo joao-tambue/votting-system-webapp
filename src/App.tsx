@@ -8,12 +8,10 @@ import {
 
 import nookies, { parseCookies } from "nookies";
 
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import RankingPage from "./pages/RankingPage";
 import { queryClient } from "./lib/react-query";
-import ActivityPage from "./pages/ActivityPage";
 import { ToastContainer } from "react-toastify";
 import ProjectsPage from "./pages/ProjectsPage";
 import { STORAGE_KEYS } from "./constants/storage-keys";
@@ -22,6 +20,8 @@ import ProjectDetailPage from "./pages/ProjectDetailPage";
 import { VTS_AUTH_TOKEN } from "./constants/cookies-keys";
 import { QueryClientProvider } from "@tanstack/react-query";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
+import CategoryPage from "./pages/CategoryPage";
+import HomePage from "./pages/HomePage";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -83,6 +83,14 @@ function App() {
             }
           />
           <Route
+            path="/activity/:activityId/categories"
+            element={
+              <ProtectedRoute>
+                <CategoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/"
             element={
               <ProtectedRoute>
@@ -90,14 +98,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/activity/:activityId"
             element={
               <ProtectedRoute>
                 <ActivityPage />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/category/:categoryId/subcategories"
             element={
