@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
                 <div
                   key={activity.id}
                   onClick={() => handleActivityClick(activity)}
-                  className="bg-white rounded-xl shadow-md p-5 cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 border-l-4 border-purple-500"
+                  className="bg-white rounded-xl shadow-md p-5 cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 "
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">

@@ -42,7 +42,7 @@
 │   │   ├── voter.model.ts
 │   │   └── when.model.ts
 │   ├── pages
-│   │   ├── ActivityPage.tsx
+│   │   ├── CategoryPage.tsx
 │   │   ├── HomePage.tsx
 │   │   ├── LoginPage.tsx
 │   │   ├── ProjectDetailPage.tsx
@@ -82,6 +82,7 @@
 │   ├── main.tsx
 │   └── vite-env.d.ts
 ├── .gitignore
+├── Untitled-1.md
 ├── eslint.config.js
 ├── index.html
 ├── package-lock.json
