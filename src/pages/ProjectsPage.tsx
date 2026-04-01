@@ -1,5 +1,4 @@
 import React from "react";
-
 import { ArrowLeft } from "lucide-react";
 import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
@@ -7,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingOverlay from "../components/LoadingOverlay";
 import { CategoryTypeModel } from "../models/category.model";
 import { useCategoriesStore } from "../stores/categories-store";
+import { useActivityStore } from "../stores/activities-store";
 import { useItemsFromCategories } from "../services/get-category-items-api";
 
 const ProjectsPage: React.FC = () => {
@@ -14,15 +14,21 @@ const ProjectsPage: React.FC = () => {
   const { categoryType, subcategoryId } = useParams();
 
   const { id: globalCategoryId } = useCategoriesStore();
+  const { id: activityId } = useActivityStore();
 
   const { data, isLoading: loadingItemsFromCategory } = useItemsFromCategories(
+    activityId,
+    globalCategoryId,
+    Number(subcategoryId),
     categoryType as CategoryTypeModel,
-    Number(globalCategoryId),
-    Number(subcategoryId)
   );
 
-  const canStillVote =
-    Array.isArray(data) && data.some((item) => item.has_voted === true);
+  console.log("Items data:", data);
+  
+
+  const canStillVote = Array.isArray(data) && !data.some((item) => item.has_voted === true);
+
+  console.log("canStillVote:", canStillVote);
 
   return (
     <>
@@ -46,10 +52,10 @@ const ProjectsPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {data &&
-              data?.length > 0 &&
-              data?.map((item) => (
+            {data && data.length > 0 ? (
+              data.map((item) => (
                 <ProjectCard
+                  activityId={activityId}
                   categoryId={globalCategoryId}
                   subCategoryId={Number(subcategoryId)}
                   categoryType={categoryType as CategoryTypeModel}
@@ -60,16 +66,15 @@ const ProjectsPage: React.FC = () => {
                     type: categoryType as CategoryTypeModel,
                   }}
                 />
-              ))}
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-12">
+                <p className="text-gray-500">
+                  Nenhum projeto encontrado nesta categoria.
+                </p>
+              </div>
+            )}
           </div>
-
-          {data && data.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">
-                Nenhum projeto encontrado nesta categoria.
-              </p>
-            </div>
-          )}
         </div>
       </Layout>
 

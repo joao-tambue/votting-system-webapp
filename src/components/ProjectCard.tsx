@@ -7,11 +7,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAddUserVote } from "../services/add-vote-api";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryTypeModel } from "../models/category.model";
-import { API_BASE_URL, DEFAULT_ACTIVITY_ID } from "../constants/constants";
+import { API_BASE_URL,} from "../constants/constants";
 import { Heart, User, GraduationCap, Building2 } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 
 interface ProjectCardProps {
+  activityId?: number;
   categoryId?: number;
   categoryType: CategoryTypeModel;
   subCategoryId?: number;
@@ -22,6 +23,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
+  activityId,
   categoryId,
   subCategoryId,
   categoryType,
@@ -36,6 +38,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: categoryQueryKeys.getItemsFromCategories(
+            activityId,
             categoryType!,
             categoryId,
             subCategoryId
@@ -54,7 +57,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       category_id: categoryId,
       category_type: categoryType,
       subcategory_id: subCategoryId,
-      activity_id: DEFAULT_ACTIVITY_ID,
+      activity_id: activityId,
     });
   };
 
@@ -99,40 +102,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <div className="flex items-center justify-between">
             <button
-              disabled={ableToVote || loadingVote}
+              disabled={!ableToVote || item.has_voted || loadingVote}
               onClick={() => handleAddVote(Number(item.id))}
               className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
-                ableToVote
-                  ? item.has_voted
-                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                item.has_voted
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"         // já votou → cinzento
                   : item.type === "stand"
+                  ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                  : item.type === "member"
                   ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                   : "bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
               } w-full md:w-auto`}
             >
-              <When expr={ableToVote}>
-                <When expr={item.has_voted}>
-                  <span className="flex items-center justify-center space-x-2">
-                    <Heart size={20} />
-                    <span>Meu voto</span>
-                  </span>
-
-                  <When.Else>
+              <When expr={loadingVote}>
+                <Spinner />
+                <When.Else>
+                  <When expr={item.has_voted}>
+                    {/* já votou */}
                     <span className="flex items-center justify-center space-x-2">
                       <Heart size={20} />
-                      <span>Voto Registrado!</span>
+                      <span>Votar neste Projecto</span>
                     </span>
-                  </When.Else>
-                </When>
-
-                <When.Else>
-                  <When expr={loadingVote}>
-                    <Spinner />
                     <When.Else>
+                      {/* ainda não votou */}
                       <span className="flex items-center justify-center space-x-2">
                         <Heart size={20} />
-                        <span>Votar neste Projeto</span>
+                        <span>Voto Registrado!</span>
                       </span>
                     </When.Else>
                   </When>
@@ -161,7 +156,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       <div className="flex items-center justify-between">
         <button
-          disabled={ableToVote || loadingVote}
+          disabled={!ableToVote || loadingVote}
           onClick={() => handleAddVote(Number(item.id))}
           className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
             ableToVote

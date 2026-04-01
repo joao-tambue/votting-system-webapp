@@ -1,8 +1,8 @@
 export interface ItemsModel {
-  id: string;
+  id: number;
   name: string;
   cover: string;
-  activity: number;
+  activity: string;
   classe: string;
   turma: string;
   course: string;

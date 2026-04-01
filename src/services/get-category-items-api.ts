@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { ItemsModel } from "../models/items.model";
 import { ExtractFnReturnType } from "../lib/react-query";
 import { categoryQueryKeys } from "../constants/query-keys";
-import { DEFAULT_ACTIVITY_ID } from "../constants/constants";
 import { CategoryTypeModel } from "../models/category.model";
 
 type ItemsResponse = {
@@ -11,15 +10,13 @@ type ItemsResponse = {
 };
 
 export async function getProjectCategoriesItem(
+  activityId: number,
+  categoryId: number,
+  subCategoryId: number,
   categoryType: CategoryTypeModel,
-  categoryId?: number,
-  subCategoryId?: number
 ) {
-  const catId = categoryId || 0;
-  const subCatId = subCategoryId || 0;
-
   const response = await api.get<ItemsResponse>(
-    `/api/get-category-items?cat_id=${catId}&subcat_id=${subCatId}&cat_tp=${categoryType}&act_id=${DEFAULT_ACTIVITY_ID}`
+    `/api/get-category-items?cat_id=${categoryId}&subcat_id=${subCategoryId}&cat_tp=${categoryType}&act_id=${activityId}`
   );
   return response.data.data;
 }
@@ -27,17 +24,20 @@ export async function getProjectCategoriesItem(
 type QueryFnType = typeof getProjectCategoriesItem;
 
 export function useItemsFromCategories(
-  categoryType: CategoryTypeModel,
+  activityId?: number,
   categoryId?: number,
-  subCategoryId?: number
+  subCategoryId?: number,
+  categoryType?: CategoryTypeModel,
 ) {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     queryKey: categoryQueryKeys.getItemsFromCategories(
+      activityId,
       categoryType,
       categoryId,
       subCategoryId
     ),
     queryFn: () =>
-      getProjectCategoriesItem(categoryType, categoryId, subCategoryId),
+      getProjectCategoriesItem(activityId!, categoryId!, subCategoryId!, categoryType!),
+    enabled: !!activityId && !!categoryId && !!categoryType,
   });
 }

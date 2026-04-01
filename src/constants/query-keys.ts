@@ -10,9 +10,12 @@ export const categoryQueryKeys = {
   getCategories: (activityId?: number) => ["categories", activityId],
   getSubcategories: (activityId?: number, categoryId?: number) => ["subcategories", activityId, categoryId],
   getItemsFromCategories: (
+    activityId?: number,
     categoryType?: string,
     categoryId?: number,
     subCategoryId?: number
-  ) => ["category-items", categoryType, categoryId, subCategoryId],
+  ) => ["category-items", activityId, categoryType, categoryId, subCategoryId],
+  getSubcategoryProjects: (subcategoryId: number) =>
+    ["subcategoryProjects", subcategoryId] as const,
   getVotesLifetime: () => ["votes-lifetime"],
 };

@@ -1,4 +1,10 @@
-import { ItemScore } from "../../models/ranking.model";
+import { ItemScore, SubcategoryProject } from "../../models/ranking.model";
+
+export type ProjectMemberNormalized = {
+  name: string;
+  classe: string;
+  turma: string;
+};
 
 export type NormalizedProject = {
   id: number;
@@ -13,6 +19,7 @@ export type NormalizedProject = {
   type: "stand" | "member" | "project";
   category: string;
   subcategory?: string | null;
+  members?: ProjectMemberNormalized[]; // novo campo
 };
 
 export function normalizeRankingData(data: ItemScore[]): NormalizedProject[] {
@@ -38,4 +45,20 @@ export function normalizeRankingData(data: ItemScore[]): NormalizedProject[] {
       subcategory: entry.subcategory,
     }))
   );
+}
+
+// Nova função para o 2º endpoint
+export function normalizeSubcategoryProjects(
+  data: SubcategoryProject[]
+): NormalizedProject[] {
+  return data.map((item) => ({
+    id: item.project_id,
+    name: item.name,
+    description: item.description,
+    votes: item.votes,
+    type: "project" as const,
+    category: item.category_name,
+    subcategory: item.subcategory_name,
+    members: item.members,
+  }));
 }
