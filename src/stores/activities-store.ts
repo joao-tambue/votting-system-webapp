@@ -45,6 +45,7 @@ export const useActivityStore = createPersistentStore<ActivityStoreType>(
       name: state.name,
       description: state.description,
       finished: state.finished,
+      end_date: state.end_date,
     }),
   }
 );

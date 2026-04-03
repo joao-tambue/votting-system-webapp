@@ -1,5 +1,4 @@
 import React from "react";
-import When from "./When";
 import { Spinner } from "./Spinner";
 import { toast } from "react-toastify";
 import { ItemsModel } from "../models/items.model";
@@ -7,8 +6,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAddUserVote } from "../services/add-vote-api";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryTypeModel } from "../models/category.model";
-import { API_BASE_URL,} from "../constants/constants";
-import { Heart, User, GraduationCap, Building2 } from "lucide-react";
+import { API_BASE_URL } from "../constants/constants";
+import { Heart, CheckCircle, Lock, GraduationCap, Users, Layers } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 
 interface ProjectCardProps {
@@ -17,10 +16,10 @@ interface ProjectCardProps {
   categoryType: CategoryTypeModel;
   subCategoryId?: number;
   ableToVote?: boolean;
-  item: ItemsModel & {
-    type: CategoryTypeModel;
-  };
+  item: ItemsModel & { type: CategoryTypeModel };
 }
+
+type VoteState = "can-vote" | "voted" | "disabled";
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   activityId,
@@ -44,10 +43,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             subCategoryId
           ),
         });
-
-        toast.success(
-          "Voto adicionado com sucesso!, continue votando nas demais categorias"
-        );
+        toast.success("Voto registado com sucesso! Continue votando nas demais categorias.");
       },
     });
 
@@ -61,138 +57,108 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     });
   };
 
-  if (item.type === "stand" || item.type == "member") {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95">
-        {item.cover && (
-     
+  const voteState: VoteState = item.has_voted
+    ? "voted"
+    : ableToVote
+    ? "can-vote"
+    : "disabled";
+
+  const typeLabel =
+    item.type === "stand" ? "Stande" :
+    item.type === "member" ? "Expositor" :
+    "Projecto";
+
+  const typeBadgeStyle =
+    item.type === "stand" || item.type === "member"
+      ? { bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" }
+      : { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" };
+
+  const TypeIcon =
+    item.type === "stand" ? Layers :
+    item.type === "member" ? Users :
+    Layers;
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-shadow duration-200 hover:shadow-md">
+      
+      {item.cover && (
+        <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0">
           <img
             src={`${API_BASE_URL}/${item.cover}`}
             alt={item.name}
-            className="w-full h-[300px] object-cover object-top "
+            className="w-full h-full object-cover object-top"
           />
+        </div>
+      )}
+
+      <div className="p-5 flex flex-col flex-1 gap-3">
+
+        <span
+          className={`inline-flex items-center gap-1.5 self-start text-xs font-semibold px-2.5 py-1 rounded-full border
+            ${typeBadgeStyle.bg} ${typeBadgeStyle.text} ${typeBadgeStyle.border}`}
+        >
+          <TypeIcon size={12} />
+          {typeLabel}
+        </span>
+
+        <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2">
+          {item.name}
+        </h3>
+
+        {(item.course || item.classe) && (
+          <div className="flex flex-col gap-1.5 text-sm text-gray-500">
+            {item.course && (
+              <span className="flex items-center gap-1.5">
+                <GraduationCap size={14} className="shrink-0 text-gray-400" />
+                {item.course}
+              </span>
+            )}
+            {item.classe && (
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-400 shrink-0" />
+                {item.classe}
+              </span>
+            )}
+          </div>
         )}
 
-        <div className="p-6">
-          <div className="flex items-center space-x-2 mb-3">
-            <Building2 size={20} className="text-orange-500" />
-            <span className="text-sm font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-              {item.type == "stand" && "Stande"}
-              {item.type == "member" && "Expositor"}
-            </span>
-          </div>
+        <div className="flex-1" />
 
-          <h3 className="text-xl font-bold text-gray-800 mb-2">{item.name}</h3>
-
-          <div className="space-y-2 mb-4">
-            {item.course && (
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <GraduationCap size={16} />
-                <span>{item.course}</span>
-              </div>
-            )}
-
-            {item.classe && (
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <span className="w-4 h-4 bg-green-500 rounded-full"></span>
-                <span>{item.classe}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <button
-              disabled={!ableToVote || item.has_voted || loadingVote}
-              onClick={() => handleAddVote(Number(item.id))}
-              className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
-                item.has_voted
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"         // já votou → cinzento
-                  : item.type === "stand"
-                  ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                  : item.type === "member"
-                  ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                  : "bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-              } w-full md:w-auto`}
-            >
-              <When expr={loadingVote}>
-                <Spinner />
-                <When.Else>
-                  <When expr={item.has_voted}>
-                    {/* já votou */}
-                    <span className="flex items-center justify-center space-x-2">
-                      <Heart size={20} />
-                      <span>Votar neste Projecto</span>
-                    </span>
-                    <When.Else>
-                      {/* ainda não votou */}
-                      <span className="flex items-center justify-center space-x-2">
-                        <Heart size={20} />
-                        <span>Voto Registrado!</span>
-                      </span>
-                    </When.Else>
-                  </When>
-                </When.Else>
-              </When>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95">
-      <div className="flex items-center space-x-2 mb-3">
-        <User size={20} className="text-blue-500" />
-        <span className="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-          Projecto
-        </span>
-      </div>
-
-      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.name}</h3>
-      {/* <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
-        {item.description}
-      </p> */}
-
-      <div className="flex items-center justify-between">
         <button
-          disabled={!ableToVote || loadingVote}
+          disabled={voteState !== "can-vote" || loadingVote}
           onClick={() => handleAddVote(Number(item.id))}
-          className={`px-4 py-2 rounded-2xl font-bold text-lg transition-all duration-200 transform ${
-            ableToVote
-              ? item.has_voted
-                ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                : "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-          } w-full md:w-auto`}
+          className={`
+            w-full flex items-center justify-center gap-2
+            py-2.5 px-4 rounded-xl text-sm font-semibold
+            transition-all duration-200
+            ${voteState === "can-vote"
+              ? "bg-orange-500 text-white hover:bg-orange-600 active:scale-95 shadow-sm hover:shadow"
+              : voteState === "voted"
+              ? "bg-green-50 text-green-700 border border-green-200 cursor-default"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }
+          `}
         >
-          <When expr={ableToVote}>
-            <When expr={item.has_voted}>
-              <span className="flex items-center justify-center space-x-2">
-                <Heart size={20} />
-                <span>Meu voto</span>
-              </span>
-
-              <When.Else>
-                <span className="flex items-center justify-center space-x-2">
-                  <Heart size={20} />
-                  <span>Voto Registrado!</span>
-                </span>
-              </When.Else>
-            </When>
-            <When.Else>
-              <When expr={loadingVote}>
-                <Spinner />
-                <When.Else>
-                  <span className="flex items-center justify-center space-x-2">
-                    <Heart size={20} />
-                    <span>Votar neste Projeto</span>
-                  </span>
-                </When.Else>
-              </When>
-            </When.Else>
-          </When>
+          {loadingVote ? (
+            <Spinner />
+          ) : voteState === "voted" ? (
+            <>
+              <CheckCircle size={16} />
+              <span>Voto registado</span>
+            </>
+          ) : voteState === "can-vote" ? (
+            <>
+              <Heart size={16} />
+              <span>Votar neste {typeLabel}</span>
+            </>
+          ) : (
+            <>
+              <Lock size={16} />
+              <span>Votação encerrada</span>
+            </>
+          )}
         </button>
+
       </div>
     </div>
   );
