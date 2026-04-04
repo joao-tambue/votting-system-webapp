@@ -1,8 +1,6 @@
-// 📁 components/SignupSidebar.tsx
 import React, { useState, useEffect } from "react";
 
 const SignupSidebar: React.FC = () => {
-  // Imagens de fundo (você pode adicionar quantas quiser)
   const backgroundImages = [
     "/image1.png",
     "/image3.png",
@@ -10,7 +8,6 @@ const SignupSidebar: React.FC = () => {
 
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  // Troca automática de imagem a cada 5 segundos
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBgIndex((prev) => (prev + 1) % backgroundImages.length);
@@ -21,7 +18,6 @@ const SignupSidebar: React.FC = () => {
 
   return (
     <div className="relative min-h-screen flex-1 flex items-end justify-center p-12 overflow-hidden">
-      {/* Conjunto de imagens passando no fundo */}
       <div className="absolute inset-0">
         {backgroundImages.map((image, index) => (
           <img
@@ -35,7 +31,6 @@ const SignupSidebar: React.FC = () => {
         ))}
       </div>
 
-      {/* Overlay escuro para legibilidade */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70" />
 
       <div className="relative z-10 max-w-xl">
@@ -51,7 +46,6 @@ const SignupSidebar: React.FC = () => {
           </p>
         </div>
 
-        {/* Bolinhas de navegação (clicáveis) */}
         <div className="flex justify-center gap-3 mt-12">
           {backgroundImages.map((_, index) => (
             <button

@@ -22,7 +22,6 @@ const RankingPage: React.FC = () => {
     [rawRankingData]
   );
 
-  // Mapa de category key → subcategory_id (para saber qual id usar no 2º endpoint)
   const subcategoryIdMap = useMemo(() => {
     const map = new Map<string, number | undefined>();
     (rawRankingData || []).forEach((entry) => {
@@ -57,17 +56,14 @@ const RankingPage: React.FC = () => {
     categoryKeys[0] || ""
   );
 
-  // Obter o subcategory_id da tab ativa (null se não existir)
   const activeSubcategoryId = useMemo(
     () => subcategoryIdMap.get(activeCategoryKey) ?? null,
     [subcategoryIdMap, activeCategoryKey]
   );
 
-  // 2º endpoint: só busca se houver subcategory_id
   const { data: rawSubcategoryProjects, isLoading: loadingSubcategory } =
     useSubcategoryProjectsRanking(activeSubcategoryId);
 
-  // Prioriza os dados detalhados do 2º endpoint quando disponíveis
   const activeProjects = useMemo(() => {
     if (rawSubcategoryProjects && rawSubcategoryProjects.length > 0) {
       return normalizeSubcategoryProjects(rawSubcategoryProjects).sort(
@@ -83,7 +79,7 @@ const RankingPage: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="space-y-12">
+        <div className="space-y-12 mt-[70px]">
           <div className="text-center">
             <div className="flex justify-center items-center space-x-2">
               <Trophy size={24} className="text-yellow-500" />

@@ -47,7 +47,6 @@ const SignUpPage: React.FC = () => {
       toast.success("Cadastro realizado! Verifique seu e-mail para ativar a conta.");
       reset();
 
-      // Navega para a tela de verificação passando o email
       navigate("/verify-email", {
         state: { email: variables.email },
       });
@@ -63,10 +62,12 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-row items-start justify-between bg-gray-100">
-      <SignupSidebar />
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
+      <div className="hidden md:flex">
+        <SignupSidebar />
+      </div>
 
-      <div className="flex-1 flex items-center justify-center p-12">
+      <div className="flex-1 flex items-center justify-center px-2 py-12">
         <div className="p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <img

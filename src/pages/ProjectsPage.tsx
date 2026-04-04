@@ -14,7 +14,8 @@ const ProjectsPage: React.FC = () => {
   const { categoryType, subcategoryId } = useParams();
 
   const { id: globalCategoryId } = useCategoriesStore();
-  const { id: activityId } = useActivityStore();
+
+  const { id: activityId, finished, end_date } = useActivityStore();
 
   const { data, isLoading: loadingItemsFromCategory } = useItemsFromCategories(
     activityId,
@@ -23,17 +24,26 @@ const ProjectsPage: React.FC = () => {
     categoryType as CategoryTypeModel,
   );
 
-  console.log("Items data:", data);
-  
+  // Condition 1: activity must not be finished
+  const activityIsOpen = finished === false;
 
-  const canStillVote = Array.isArray(data) && !data.some((item) => item.has_voted === true);
+  // Condition 2: end date must not have passed (if end_date exists)
+  const endDateNotPassed = end_date
+    ? new Date(end_date) > new Date()
+    : true;
 
-  console.log("canStillVote:", canStillVote);
+  // Condition 3: user hasn't voted in this subcategory yet
+  const hasNotVotedYet =
+    Array.isArray(data) && !data.some((item) => item.has_voted === true);
+
+  const ableToVote = activityIsOpen && endDateNotPassed && hasNotVotedYet;
+
+  console.log("ableToVote:", { activityIsOpen, endDateNotPassed, hasNotVotedYet, ableToVote });
 
   return (
     <>
       <Layout>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-[70px]">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}
@@ -59,7 +69,7 @@ const ProjectsPage: React.FC = () => {
                   categoryId={globalCategoryId}
                   subCategoryId={Number(subcategoryId)}
                   categoryType={categoryType as CategoryTypeModel}
-                  ableToVote={canStillVote}
+                  ableToVote={ableToVote}
                   key={item.id}
                   item={{
                     ...item,

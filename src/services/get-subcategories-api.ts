@@ -12,7 +12,6 @@ export async function getSubcategoriesApi(
     `/api/get-subcategories/activity/${activityId}/category/${categoryId}`
   );
 
-  console.log("Subcategories API Response:", response.data); // Log the response data for debugging
   return response.data;
 }
 

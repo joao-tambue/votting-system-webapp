@@ -22,6 +22,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { isFetched, setLifetimeStatus } = useVotesLifetimeStore();
   const { data: lifetimeStatus, isSuccess } = useCheckVotesLifetime();
 
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    // pequena tolerância para evitar flickering
+    const threshold = 10;
+
+    if (Math.abs(currentScrollY - lastScrollY) < threshold) return;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 80) {
+      // scroll para baixo → esconder
+      setShowHeader(false);
+    } else {
+      // scroll para cima → mostrar
+      setShowHeader(true);
+    }
+
+    setLastScrollY(currentScrollY);
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, [lastScrollY]);
+
   useEffect(() => {
     if (isSuccess) {
       setLifetimeStatus(lifetimeStatus.is_fetched);
@@ -54,7 +84,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <header className="bg-white shadow-lg border-b-4 border-green-500">
+      <header className={`
+        fixed top-0 left-0 w-full z-50
+        transition-all duration-300 ease-in-out
+        ${showHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}
+        
+        backdrop-blur-md bg-white/70
+        shadow-lg border-b-4 border-green-500
+      `}>
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
