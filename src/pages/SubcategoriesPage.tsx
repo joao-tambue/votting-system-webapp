@@ -26,7 +26,7 @@ const SubcategoriesPage: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-[70px]">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}

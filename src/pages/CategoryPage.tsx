@@ -121,7 +121,7 @@ const CategoryPage: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-[70px]">
           {/* Header */}
           <div className="flex items-center gap-3">
             <button

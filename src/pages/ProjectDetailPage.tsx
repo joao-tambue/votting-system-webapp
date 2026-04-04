@@ -39,8 +39,7 @@ const ProjectDetailPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        {/* Header */}
+      <div className="space-y-6 mt-[70px]">
         <div className="flex items-center space-x-3">
           <button
             onClick={() => navigate(-1)}
@@ -54,12 +53,8 @@ const ProjectDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Project Details */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {/* Image for stands */}
           {project.type === 'stand' && project.image && (
-
-
             <div className="relative">
               <img 
                 src={project.image} 
@@ -76,7 +71,6 @@ const ProjectDetailPage: React.FC = () => {
           )}
 
           <div className="p-6 md:p-8">
-            {/* Project type badge for expositors */}
             {project.type === 'expositor' && (
               <div className="mb-4">
                 <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2 w-fit">
@@ -86,7 +80,6 @@ const ProjectDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Title and votes */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 md:mb-0">
                 {project.name}
@@ -98,7 +91,6 @@ const ProjectDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Course and class info for expositors */}
             {project.type === 'expositor' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
@@ -118,7 +110,6 @@ const ProjectDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Description */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Descrição</h3>
               <p className="text-gray-600 leading-relaxed text-base md:text-lg">
@@ -126,7 +117,6 @@ const ProjectDetailPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Additional info for stands */}
             {project.type === 'stand' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg">
@@ -146,7 +136,6 @@ const ProjectDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Vote button */}
             <div className="flex justify-center">
               <button
                 onClick={handleVote}

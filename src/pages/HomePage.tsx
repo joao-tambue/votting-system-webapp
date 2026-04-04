@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-[70px]">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Atividades</h2>
             <p className="text-sm text-gray-500 mt-1">

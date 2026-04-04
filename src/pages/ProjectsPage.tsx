@@ -1,4 +1,3 @@
-// ProjectsPage.tsx
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 import Layout from "../components/Layout";
@@ -16,7 +15,6 @@ const ProjectsPage: React.FC = () => {
 
   const { id: globalCategoryId } = useCategoriesStore();
 
-  // Pull the full activity object, not just the id
   const { id: activityId, finished, end_date } = useActivityStore();
 
   const { data, isLoading: loadingItemsFromCategory } = useItemsFromCategories(
@@ -45,7 +43,7 @@ const ProjectsPage: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-[70px]">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}

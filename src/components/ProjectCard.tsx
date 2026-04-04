@@ -84,7 +84,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {item.cover && (
         <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0">
           <img
-            src={`${API_BASE_URL}/${item.cover}`}
+            src={`${API_BASE_URL}/${item.cover} || /notfound.png`}
             alt={item.name}
             className="w-full h-full object-cover object-top"
           />
@@ -143,7 +143,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <Spinner />
           ) : voteState === "voted" ? (
             <>
-              <CheckCircle size={16} />
+              {/* <CheckCircle size={16} /> */}
               <span>Voto registado</span>
             </>
           ) : voteState === "can-vote" ? (
