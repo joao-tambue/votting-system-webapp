@@ -139,7 +139,7 @@ function App() {
             }
           />
           <Route
-            path="/ranking"
+            path="/activity/:activityId/ranking"
             element={
               <ProtectedRoute>
                 <RankingPage />

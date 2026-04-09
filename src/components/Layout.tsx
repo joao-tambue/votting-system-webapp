@@ -8,6 +8,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useVotesLifetimeStore } from "../stores/votes-lifetime-store";
 import { shortenTextWithEllipsis } from "../utils/shorten-text-with-ellipsis";
 import { useCheckVotesLifetime } from "../services/check-the-lifetime-of-votes-api";
+import { useActivityStore } from "../stores/activities-store";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,32 +26,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  // Get activityId from the store to build the ranking URL
+  const { id: activityId } = useActivityStore();
+  const rankingPath = activityId ? `/activity/${activityId}/ranking` : null;
+
   useEffect(() => {
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const threshold = 10;
+      if (Math.abs(currentScrollY - lastScrollY) < threshold) return;
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        setShowHeader(false);
+      } else {
+        setShowHeader(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
 
-    // pequena tolerância para evitar flickering
-    const threshold = 10;
-
-    if (Math.abs(currentScrollY - lastScrollY) < threshold) return;
-
-    if (currentScrollY > lastScrollY && currentScrollY > 80) {
-      // scroll para baixo → esconder
-      setShowHeader(false);
-    } else {
-      // scroll para cima → mostrar
-      setShowHeader(true);
-    }
-
-    setLastScrollY(currentScrollY);
-  };
-
-  window.addEventListener("scroll", handleScroll, { passive: true });
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, [lastScrollY]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -70,28 +67,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       localStorage.removeItem(item);
       sessionStorage.removeItem(item);
     });
-
     nookies.destroy(null, VTS_AUTH_TOKEN, { path: "/" });
-
     setShowUserMenu(false);
     setShowLogoutModal(false);
-
     navigate("/login");
   };
 
-  // const isRankingPage = location.pathname === "/ranking";
   const isHomePage = location.pathname === "/";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <header className={`
-        fixed top-0 left-0 w-full z-50
-        transition-all duration-300 ease-in-out
-        ${showHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}
-        
-        backdrop-blur-md bg-white/70
-        shadow-lg border-b-4 border-green-500
-      `}>
+      <header
+        className={`
+          fixed top-0 left-0 w-full z-50
+          transition-all duration-300 ease-in-out
+          ${showHeader ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}
+          backdrop-blur-md bg-white/70
+          shadow-lg border-b-4 border-green-500
+        `}
+      >
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -117,9 +111,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
               )}
 
-              {!isFetched && (
+              {!isFetched && rankingPath && (
                 <button
-                  onClick={() => navigate("/ranking")}
+                  onClick={() => navigate(rankingPath)}
                   className="p-2 rounded-full bg-yellow-100 text-yellow-600 hover:bg-yellow-200 transition-colors"
                   title="Ranking"
                 >
@@ -142,7 +136,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 font-bold text-gray-600">
                           {coverName}
                         </div>
-
                         <div>
                           <p className="font-semibold text-gray-800">
                             {me?.name}
@@ -155,19 +148,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
 
                     <div className="py-2">
-                      {!isFetched && (
+                      {!isFetched && rankingPath && (
                         <>
                           <Link
-                            to="ranking"
-                            onClick={() => {
-                              setShowUserMenu(false);
-                            }}
+                            to={rankingPath}
+                            onClick={() => setShowUserMenu(false)}
                             className="w-full px-4 py-2 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors"
                           >
                             <Trophy size={16} className="text-gray-500" />
                             <span className="text-gray-700">Ranking</span>
                           </Link>
-
                           <hr className="my-2" />
                         </>
                       )}
@@ -207,7 +197,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Tem certeza que deseja sair do sistema?
               </p>
             </div>
-
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowLogoutModal(false)}

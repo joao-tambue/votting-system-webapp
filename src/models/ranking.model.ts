@@ -1,7 +1,7 @@
 export interface ItemScore {
   category: string;
   subcategory?: string;
-  subcategory_id?: number; // necessário para o 2º endpoint
+  subcategory_id?: number;
   category_type: string;
   ranking: RankingModel[];
 }

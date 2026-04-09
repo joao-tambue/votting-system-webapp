@@ -19,7 +19,7 @@ export type NormalizedProject = {
   type: "stand" | "member" | "project";
   category: string;
   subcategory?: string | null;
-  members?: ProjectMemberNormalized[]; // novo campo
+  members?: ProjectMemberNormalized[];
 };
 
 export function normalizeRankingData(data: ItemScore[]): NormalizedProject[] {
@@ -47,7 +47,6 @@ export function normalizeRankingData(data: ItemScore[]): NormalizedProject[] {
   );
 }
 
-// Nova função para o 2º endpoint
 export function normalizeSubcategoryProjects(
   data: SubcategoryProject[]
 ): NormalizedProject[] {

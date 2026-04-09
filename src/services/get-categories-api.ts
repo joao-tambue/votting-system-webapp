@@ -9,7 +9,7 @@ export async function getCategoriesApi(activityId: number): Promise<CategoryMode
     `/api/get-categories/${activityId}`
   );
 
-  console.log("Categories API Response:", response.data); // Log the raw response data for debugging
+  console.log("Categories API Response:", response.data);
   return response.data;
 }
 

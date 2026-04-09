@@ -3,11 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { ItemScore, SubcategoryProject } from "../models/ranking.model";
 import { ExtractFnReturnType } from "../lib/react-query";
 import { categoryQueryKeys } from "../constants/query-keys";
-import { DEFAULT_ACTIVITY_ID } from "../constants/constants";
 
-export async function getRankingApi() {
+export async function getRankingApi(activityId: number) {
   const response = await api.get<ItemScore[]>(
-    `/api/public-rankings/${DEFAULT_ACTIVITY_ID}`
+    `/api/public-rankings/${activityId}`
   );
   return response.data;
 }
@@ -22,10 +21,11 @@ export async function getSubcategoryProjectsRanking(subcategoryId: number) {
 type RankingQueryFnType = typeof getRankingApi;
 type SubcategoryQueryFnType = typeof getSubcategoryProjectsRanking;
 
-export function useTrackVotesRaking() {
+export function useTrackVotesRaking(activityId?: number) {
   return useQuery<ExtractFnReturnType<RankingQueryFnType>>({
-    queryKey: categoryQueryKeys.getCategories(),
-    queryFn: () => getRankingApi(),
+    queryKey: categoryQueryKeys.getPublicRankings(activityId),
+    queryFn: () => getRankingApi(activityId!),
+    enabled: activityId != null && !isNaN(activityId),
   });
 }
 
@@ -33,6 +33,6 @@ export function useSubcategoryProjectsRanking(subcategoryId: number | null) {
   return useQuery<ExtractFnReturnType<SubcategoryQueryFnType>>({
     queryKey: categoryQueryKeys.getSubcategoryProjects(subcategoryId!),
     queryFn: () => getSubcategoryProjectsRanking(subcategoryId!),
-    enabled: subcategoryId !== null,
+    enabled: subcategoryId != null && !isNaN(subcategoryId),
   });
 }
