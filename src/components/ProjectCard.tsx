@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAddUserVote } from "../services/add-vote-api";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryTypeModel } from "../models/category.model";
-import { API_BASE_URL } from "../constants/constants";
 import { Heart, Lock, GraduationCap, Users, Layers } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 
@@ -164,7 +163,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           ) : (
             <>
               <Lock size={16} />
-              <span>Votação encerrada</span>
+              <span>votar neste {typeLabel}</span>
             </>
           )}
         </button>

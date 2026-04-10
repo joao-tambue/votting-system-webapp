@@ -15,7 +15,7 @@ const ProjectsPage: React.FC = () => {
 
   const { id: globalCategoryId } = useCategoriesStore();
 
-  const { id: activityId, finished, end_date } = useActivityStore();
+  const { id: activityId } = useActivityStore();
 
   const { data, isLoading: loadingItemsFromCategory } = useItemsFromCategories(
     activityId,
@@ -23,22 +23,12 @@ const ProjectsPage: React.FC = () => {
     Number(subcategoryId),
     categoryType as CategoryTypeModel,
   );
-
-  // Condition 1: activity must not be finished
-  const activityIsOpen = finished === false;
-
-  // Condition 2: end date must not have passed (if end_date exists)
-  const endDateNotPassed = end_date
-    ? new Date(end_date) > new Date()
-    : true;
-
-  // Condition 3: user hasn't voted in this subcategory yet
   const hasNotVotedYet =
     Array.isArray(data) && !data.some((item) => item.has_voted === true);
 
-  const ableToVote = activityIsOpen && endDateNotPassed && hasNotVotedYet;
+  const ableToVote = hasNotVotedYet;
 
-  console.log("ableToVote:", { activityIsOpen, endDateNotPassed, hasNotVotedYet, ableToVote });
+  console.log("ableToVote:", { hasNotVotedYet, ableToVote });
 
   return (
     <>
