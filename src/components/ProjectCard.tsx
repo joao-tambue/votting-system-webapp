@@ -78,13 +78,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     item.type === "member" ? Users :
     Layers;
 
+  const CLOUDINARY_BASE = "https://res.cloudinary.com/dufhuqouw/image/upload/";
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-5 flex flex-col transition-shadow duration-200 hover:shadow-md">
       
       {item.cover && (
         <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0">
           <img
-            src={item.cover ? item.cover.trim() : "/notfound.png"}
+            src={
+              item.cover
+                ? CLOUDINARY_BASE + item.cover
+                : "/notfound.png"
+            }
             alt={item.name}
             onError={(e) => {
               e.currentTarget.onerror = null;
