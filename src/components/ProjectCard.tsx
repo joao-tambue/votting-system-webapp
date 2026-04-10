@@ -7,7 +7,7 @@ import { useAddUserVote } from "../services/add-vote-api";
 import { categoryQueryKeys } from "../constants/query-keys";
 import { CategoryTypeModel } from "../models/category.model";
 import { API_BASE_URL } from "../constants/constants";
-import { Heart, CheckCircle, Lock, GraduationCap, Users, Layers } from "lucide-react";
+import { Heart, Lock, GraduationCap, Users, Layers } from "lucide-react";
 import { handleApiError } from "../services/errors/handle-errors-api";
 
 interface ProjectCardProps {
@@ -79,19 +79,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     Layers;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col transition-shadow duration-200 hover:shadow-md">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-5 flex flex-col transition-shadow duration-200 hover:shadow-md">
       
       {item.cover && (
         <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0">
           <img
             src={`${API_BASE_URL}/${item.cover} || /notfound.png`}
             alt={item.name}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-top rounded-2xl"
           />
         </div>
       )}
 
-      <div className="p-5 flex flex-col flex-1 gap-3">
+      <div className="pt-5 flex flex-col flex-1 gap-3">
 
         <span
           className={`inline-flex items-center gap-1.5 self-start text-xs font-semibold px-2.5 py-1 rounded-full border
