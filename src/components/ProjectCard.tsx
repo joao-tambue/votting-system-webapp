@@ -84,8 +84,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {item.cover && (
         <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0">
           <img
-            src={`${API_BASE_URL}/${item.cover} || /notfound.png`}
+            src={item.cover || `${API_BASE_URL}/notfound.png`}
             alt={item.name}
+            onError={(e) => { e.currentTarget.src = "/notfound.png"; }}
             className="w-full h-full object-cover object-top rounded-2xl"
           />
         </div>
