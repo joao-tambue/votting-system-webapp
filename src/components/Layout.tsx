@@ -74,6 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   const isHomePage = location.pathname === "/";
+  const isInsideActivity = location.pathname.includes("/activity/");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
@@ -111,7 +112,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
               )}
 
-              {!isFetched && rankingPath && (
+              {isInsideActivity && !isFetched && rankingPath && (
                 <button
                   onClick={() => navigate(rankingPath)}
                   className="p-2 rounded-full bg-yellow-100 text-yellow-600 hover:bg-yellow-200 transition-colors"
@@ -148,7 +149,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
 
                     <div className="py-2">
-                      {!isFetched && rankingPath && (
+                      {isInsideActivity && !isFetched && rankingPath && (
                         <>
                           <Link
                             to={rankingPath}
