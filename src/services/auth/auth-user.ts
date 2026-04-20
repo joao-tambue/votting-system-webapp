@@ -17,7 +17,12 @@ export async function signInUserApi({ email, password }: SignInRequestDTO) {
     password,
   });
 
-  return response.data;
+  // console.log("Login response:", response.data);
+
+  return {
+    token: response.data.token,
+    refresh: response.data.refresh,
+  } as AuthResponseModel;
 }
 
 export function useSignInUser(
@@ -29,6 +34,9 @@ export function useSignInUser(
         email: data.email,
         password: data.password,
       });
+
+      // console.log("Response completo:", response);
+      // console.log("Token extraído:", response?.token);
 
       const me = await getMe(response?.token);
 

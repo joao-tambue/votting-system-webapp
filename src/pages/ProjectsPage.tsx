@@ -1,5 +1,5 @@
-import React from "react";
-import { ArrowLeft } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,9 +12,9 @@ import { useItemsFromCategories } from "../services/get-category-items-api";
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const { categoryType, subcategoryId } = useParams();
+  const [page, setPage] = useState(1);
 
   const { id: globalCategoryId } = useCategoriesStore();
-
   const { id: activityId } = useActivityStore();
 
   const { data, isLoading: loadingItemsFromCategory } = useItemsFromCategories(
@@ -22,13 +22,17 @@ const ProjectsPage: React.FC = () => {
     globalCategoryId,
     Number(subcategoryId),
     categoryType as CategoryTypeModel,
+    page
   );
-  const hasNotVotedYet =
-    Array.isArray(data) && !data.some((item) => item.has_voted === true);
 
+  const items = data?.results ?? [];
+  const totalCount = data?.count ?? 0;
+  const hasNext = !!data?.next;
+  const hasPrevious = !!data?.previous;
+  const totalPages = Math.ceil(totalCount / 10);
+
+  const hasNotVotedYet = items.length > 0 && !items.some((item) => item.has_voted === true);
   const ableToVote = hasNotVotedYet;
-
-  console.log("ableToVote:", { hasNotVotedYet, ableToVote });
 
   return (
     <>
@@ -46,14 +50,14 @@ const ProjectsPage: React.FC = () => {
                 Items
               </h2>
               <p className="text-sm text-gray-600">
-                {data && data.length} items encontrados
+                {totalCount} items encontrados
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {data && data.length > 0 ? (
-              data.map((item) => (
+            {items.length > 0 ? (
+              items.map((item) => (
                 <ProjectCard
                   activityId={activityId}
                   categoryId={globalCategoryId}
@@ -75,6 +79,31 @@ const ProjectsPage: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Paginação */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 py-4">
+              <button
+                onClick={() => setPage((p) => p - 1)}
+                disabled={!hasPrevious}
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft size={20} className="text-gray-600" />
+              </button>
+
+              <span className="text-sm text-gray-600 font-medium">
+                Página {page} de {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={!hasNext}
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight size={20} className="text-gray-600" />
+              </button>
+            </div>
+          )}
         </div>
       </Layout>
 
