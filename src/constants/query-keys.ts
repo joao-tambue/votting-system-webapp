@@ -8,17 +8,19 @@ export const activitiesQueryKeys = {
 
 export const categoryQueryKeys = {
   getCategories: (activityId?: number) => ["categories", activityId],
-  getSubcategories: (activityId?: number, categoryId?: number) => [
+  getSubcategories: (activityId?: number, categoryId?: number, page: number = 1) => [
     "subcategories",
     activityId,
     categoryId,
+    page,
   ],
   getItemsFromCategories: (
     activityId?: number,
     categoryType?: string,
     categoryId?: number,
-    subCategoryId?: number
-  ) => ["category-items", activityId, categoryType, categoryId, subCategoryId],
+    subCategoryId?: number,
+    page: number = 1
+  ) => ["category-items", activityId, categoryType, categoryId, subCategoryId, page],
   getSubcategoryProjects: (subcategoryId: number) =>
     ["subcategoryProjects", subcategoryId] as const,
   getPublicRankings: (activityId?: number) => ["public-rankings", activityId],

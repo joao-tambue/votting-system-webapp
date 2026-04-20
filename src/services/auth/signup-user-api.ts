@@ -9,7 +9,7 @@ type RegisterVoterRequestDTO = {
 
 type RegisterVoterResponse = {
   message: string;
-  // voter pode ou não vir (dependendo do backend). Vamos deixar opcional.
+  // voter pode ou não vir (dependendo do backend).
 };
 
 export async function registerVoterApi(data: RegisterVoterRequestDTO) {
